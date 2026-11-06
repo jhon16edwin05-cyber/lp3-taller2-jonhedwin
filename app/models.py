@@ -4,8 +4,10 @@ Define la estructura de las tablas de la base de datos.
 SQLModel combina SQLAlchemy con Pydantic para validación automática.
 """
 
+from pydantic import field_validator
 from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional, List, UniqueConstraint
+from sqlalchemy import UniqueConstraint
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -65,6 +67,7 @@ class Favorito(SQLModel, table=True):
      pelicula: Optional[Pelicula] = Relationship(back_populates="favoritos")
     
     # Opcional - Agregar restricción de unicidad
+
      class Config:
          
          table_args = (
@@ -87,9 +90,8 @@ def cantidad_favoritos(self) -> int:
 
 
 # Opcional - Agregar validadores personalizados
-from sqlmodel import validator
-
-@validator('correo')
+@field_validator('correo')
+@classmethod
 def validar_correo(cls, v):
      if '@' not in v:
         raise ValueError('Correo electrónico inválido')
