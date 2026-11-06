@@ -14,128 +14,117 @@ from datetime import datetime
 # ESQUEMAS DE USUARIO
 # =============================================================================
 
-# TODO: Schema para crear un usuario (request)
+# Schema para crear un usuario (request)
 class UsuarioCreate(BaseModel):
-    """
-    Schema para crear un nuevo usuario.
-    No incluye id ni fecha_registro (se generan automáticamente).
-    """
-    # nombre: str = Field(min_length=1, max_length=100, description="Nombre del usuario")
-    # correo: EmailStr = Field(description="Correo electrónico único")
     
-    # TODO: Opcional - Agregar ejemplo para la documentación
-    # model_config = ConfigDict(
-    #     json_schema_extra={
-    #         "example": {
-    #             "nombre": "Juan Pérez",
-    #             "correo": "juan.perez@email.com"
-    #         }
-    #     }
-    # )
-    pass
+     nombre: str = Field(min_length=1, max_length=100, description="Nombre del usuario")
+     correo: EmailStr = Field(description="Correo electrónico único")
+    
+    # Opcional - Agregar ejemplo para la documentación
+
+     model_config = ConfigDict(
+         json_schema_extra={
+             "example": {
+                 "nombre": "Juan Pérez",
+                 "correo": "juan.perez@email.com"
+             }
+         }
+     )
+    
 
 
-# TODO: Schema para actualizar un usuario (request)
+# Schema para actualizar un usuario (request)
+
 class UsuarioUpdate(BaseModel):
-    """
-    Schema para actualizar un usuario existente.
-    Todos los campos son opcionales.
-    """
-    # nombre: Optional[str] = Field(None, min_length=1, max_length=100)
-    # correo: Optional[EmailStr] = None
-    pass
-
-
-# TODO: Schema para leer un usuario (response)
-class UsuarioRead(BaseModel):
-    """
-    Schema para retornar información de un usuario.
-    Incluye todos los campos del modelo.
-    """
-    # id: int
-    # nombre: str
-    # correo: str
-    # fecha_registro: datetime
     
-    # model_config = ConfigDict(from_attributes=True)
-    pass
+     nombre: Optional[str] = Field(None, min_length=1, max_length=100)
+     correo: Optional[EmailStr] = None
+    
 
 
-# TODO: Schema para usuario con sus favoritos (response)
+#  Schema para leer un usuario (response)
+
+class UsuarioRead(BaseModel):
+    
+     id: int
+     nombre: str
+     correo: str
+     fecha_registro: datetime
+    
+     model_config = ConfigDict(from_attributes=True)
+
+
+
+# Schema para usuario con sus favoritos (response)
+
 class UsuarioWithFavoritos(UsuarioRead):
-    """
-    Schema para retornar un usuario con sus películas favoritas.
-    """
-    # favoritos: List["FavoritoRead"] = []
-    pass
+   
+     favoritos: List["FavoritoRead"] = []
+    
 
 
 # =============================================================================
 # ESQUEMAS DE PELÍCULA
 # =============================================================================
 
-# TODO: Schema para crear una película (request)
+#  Schema para crear una película (request)
+
 class PeliculaCreate(BaseModel):
-    """
-    Schema para crear una nueva película.
-    """
-    # titulo: str = Field(min_length=1, max_length=200)
-    # director: str = Field(min_length=1, max_length=150)
-    # genero: str = Field(min_length=1, max_length=100)
-    # duracion: int = Field(gt=0, description="Duración en minutos")
-    # año: int = Field(ge=1888, le=2100, description="Año de estreno")
-    # clasificacion: str = Field(max_length=10)
-    # sinopsis: Optional[str] = Field(None, max_length=1000)
+   
+     titulo: str = Field(min_length=1, max_length=200)
+     director: str = Field(min_length=1, max_length=150)
+     genero: str = Field(min_length=1, max_length=100)
+     duracion: int = Field(gt=0, description="Duración en minutos")
+     año: int = Field(ge=1888, le=2100, description="Año de estreno")
+     clasificacion: str = Field(max_length=10)
+     sinopsis: Optional[str] = Field(None, max_length=1000)
     
-    # model_config = ConfigDict(
-    #     json_schema_extra={
-    #         "example": {
-    #             "titulo": "Inception",
-    #             "director": "Christopher Nolan",
-    #             "genero": "Ciencia Ficción, Acción",
-    #             "duracion": 148,
-    #             "año": 2010,
-    #             "clasificacion": "PG-13",
-    #             "sinopsis": "Un ladrón que roba secretos mediante tecnología de sueños..."
-    #         }
-    #     }
-    # )
-    pass
+     model_config = ConfigDict(
+         json_schema_extra={
+             "example": {
+                 "titulo": "Inception",
+                 "director": "Christopher Nolan",
+                 "genero": "Ciencia Ficción, Acción",
+                 "duracion": 148,
+                 "año": 2010,
+                 "clasificacion": "PG-13",
+                 "sinopsis": "Un ladrón que roba secretos mediante tecnología de sueños..."
+             }
+         }
+     )
+    
 
 
-# TODO: Schema para actualizar una película (request)
+#  Schema para actualizar una película (request)
+
 class PeliculaUpdate(BaseModel):
-    """
-    Schema para actualizar una película existente.
-    Todos los campos son opcionales.
-    """
-    # titulo: Optional[str] = Field(None, min_length=1, max_length=200)
-    # director: Optional[str] = Field(None, min_length=1, max_length=150)
-    # genero: Optional[str] = None
-    # duracion: Optional[int] = Field(None, gt=0)
-    # año: Optional[int] = Field(None, ge=1888, le=2100)
-    # clasificacion: Optional[str] = None
-    # sinopsis: Optional[str] = None
-    pass
-
-
-# TODO: Schema para leer una película (response)
-class PeliculaRead(BaseModel):
-    """
-    Schema para retornar información de una película.
-    """
-    # id: int
-    # titulo: str
-    # director: str
-    # genero: str
-    # duracion: int
-    # año: int
-    # clasificacion: str
-    # sinopsis: Optional[str]
-    # fecha_creacion: datetime
     
-    # model_config = ConfigDict(from_attributes=True)
-    pass
+     titulo: Optional[str] = Field(None, min_length=1, max_length=200)
+     director: Optional[str] = Field(None, min_length=1, max_length=150)
+     genero: Optional[str] = None
+     duracion: Optional[int] = Field(None, gt=0)
+     año: Optional[int] = Field(None, ge=1888, le=2100)
+     clasificacion: Optional[str] = None
+     sinopsis: Optional[str] = None
+    
+
+
+# Schema para leer una película (response)
+
+class PeliculaRead(BaseModel):
+    
+     id: int
+     titulo: str
+     director: str
+     genero: str
+     duracion: int
+     año: int
+     clasificacion: str
+     sinopsis: Optional[str]
+     fecha_creacion: datetime
+    
+     model_config = ConfigDict(from_attributes=True)
+    
 
 
 # =============================================================================
