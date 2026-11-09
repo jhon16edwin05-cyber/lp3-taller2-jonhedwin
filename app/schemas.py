@@ -131,77 +131,71 @@ class PeliculaRead(BaseModel):
 # ESQUEMAS DE FAVORITO
 # =============================================================================
 
-# TODO: Schema para crear un favorito (request)
+# Schema para crear un favorito (request)
+
 class FavoritoCreate(BaseModel):
-    """
-    Schema para marcar una película como favorita.
-    """
-    # id_usuario: int = Field(gt=0)
-    # id_pelicula: int = Field(gt=0)
-    pass
-
-
-# TODO: Schema para leer un favorito (response)
-class FavoritoRead(BaseModel):
-    """
-    Schema para retornar información de un favorito.
-    """
-    # id: int
-    # id_usuario: int
-    # id_pelicula: int
-    # fecha_marcado: datetime
     
-    # model_config = ConfigDict(from_attributes=True)
-    pass
+     id_usuario: int = Field(gt=0)
+     id_pelicula: int = Field(gt=0)
+    
 
 
-# TODO: Schema para favorito con información completa (response)
+#  Schema para leer un favorito (response)
+
+class FavoritoRead(BaseModel):
+   
+     id: int
+     id_usuario: int
+     id_pelicula: int
+     fecha_marcado: datetime
+    
+     model_config = ConfigDict(from_attributes=True)
+    
+
+
+# Schema para favorito con información completa (response)
+
 class FavoritoWithDetails(FavoritoRead):
-    """
-    Schema para retornar un favorito con información del usuario y película.
-    """
-    # usuario: UsuarioRead
-    # pelicula: PeliculaRead
-    pass
+
+    
+     usuario: UsuarioRead
+     pelicula: PeliculaRead
+    
 
 
 # =============================================================================
 # ESQUEMAS DE RESPUESTA GENÉRICOS
 # =============================================================================
 
-# TODO: Schema para respuestas con mensajes
+#  Schema para respuestas con mensajes
 class MessageResponse(BaseModel):
-    """
-    Schema genérico para respuestas con mensajes.
-    """
-    # message: str
-    # detail: Optional[str] = None
-    pass
+    
+     message: str
+     detail: Optional[str] = None
+    
 
 
-# TODO: Schema para respuestas paginadas
+# Schema para respuestas paginadas
+
 class PaginatedResponse(BaseModel):
-    """
-    Schema genérico para respuestas paginadas.
-    """
-    # items: List[BaseModel]
-    # total: int
-    # page: int = 1
-    # size: int = 50
-    # pages: int
-    pass
+    
+     items: List[BaseModel]
+     total: int
+     page: int = 1
+     size: int = 50
+     pages: int
+    
 
 
-# TODO: Opcional - Schema para búsqueda de películas
+#  Opcional - Schema para búsqueda de películas
+
 class PeliculaSearchParams(BaseModel):
-    """
-    Parámetros de búsqueda para películas.
-    """
-    # titulo: Optional[str] = None
-    # director: Optional[str] = None
-    # genero: Optional[str] = None
-    # año: Optional[int] = None
-    # año_min: Optional[int] = None
-    # año_max: Optional[int] = None
-    pass
+   
+     titulo: Optional[str] = None
+     director: Optional[str] = None
+     genero: Optional[str] = None
+     año: Optional[int] = None
+     año_min: Optional[int] = None
+     año_max: Optional[int] = None
+    
 

@@ -5,70 +5,80 @@ from contextlib import asynccontextmanager
 from app.database import create_db_and_tables
 from app.routers import usuarios, peliculas, favoritos
 
-# TODO: Importar la configuración desde app.config
+#  Importar la configuración desde app.config
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Gestor de ciclo de vida de la aplicación.
-    Se ejecuta al iniciar y al cerrar la aplicación.
-    """
+    
     # Startup: Crear tablas en la base de datos
+
     create_db_and_tables()
     yield
     
     # Shutdown: Limpiar recursos si es necesario
+
     print("cerrando aplicación...")
 
 
-# TODO: Crear la instancia de FastAPI con metadatos apropiados
+#  Crear la instancia de FastAPI con metadatos apropiados
 # Incluir: title, description, version, contact, license_info
+
 app = FastAPI(
     title="API de Películas",
     description="API RESTful para gestionar usuarios, películas y favoritos",
     version="1.0.0",
     lifespan=lifespan,
-    # TODO: Agregar información de contacto y licencia
-    # contact={
-    #     "name": "Tu Nombre",
-    #     "email": "tu.email@example.com",
-    # },
-    # license_info={
-    #     "name": "MIT",
-    # },
+
+    #  Agregar información de contacto y licencia
+
+     contact={
+         "name": "Tu Nombre",
+         "email": "tu.email@example.com",
+     },
+     license_info={
+         "name": "MIT",
+     },
 )
 
 
-# TODO: Configurar CORS para permitir solicitudes desde diferentes orígenes
+# Configurar CORS para permitir solicitudes desde diferentes orígenes
 # Esto es importante para desarrollo con frontend separado
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: En producción, especificar orígenes permitidos
+    allow_origins=["*"],  #  En producción, especificar orígenes permitidos
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-# TODO: Incluir los routers de usuarios, peliculas y favoritos
+# Incluir los routers de usuarios, peliculas y favoritos
 # Ejemplo:
-# app.include_router(usuarios.router, prefix="/api/usuarios", tags=["Usuarios"])
+
+app.include_router(usuarios.router, prefix="/api/usuarios", tags=["Usuarios"])
+app.include_router(peliculas.router, prefix="/peliculas", tags=["Películas"])
+app.include_router(favoritos.router, prefix="/favoritos", tags=["Favoritos"])
 
 
-# TODO: Crear un endpoint raíz que retorne información básica de la API
+# Crear un endpoint raíz que retorne información básica de la API
+
 @app.get("/", tags=["Root"])
 async def root():
-    """
-    Endpoint raíz de la API.
-    Retorna información básica y enlaces a la documentación.
-    """
+    
     return {
-        # TODO: Agregar información 
+        "nombre_app": "API de Películas y Favoritos",
+        "version": "1.0.0",
+        "descripcion": "API desarrollada con FastAPI y SQLModel para el Taller 2 de LP3",
+        "documentacion": "/docs",
+        "redoc": "/redoc",
+        "estado": "En línea"
     }
 
 
 # Crear un endpoint de health check para monitoreo
+
 @app.get("/health", tags=["Health"])
 async def health_check():
     """

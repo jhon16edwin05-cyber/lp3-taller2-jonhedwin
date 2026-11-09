@@ -293,6 +293,7 @@ def peliculas_por_clasificacion(
 
 
 # Opcional - Endpoint para obtener películas recientes
+
 @router.get("/recientes/nuevas", response_model=List[PeliculaRead])
 def peliculas_recientes(
     limit: int = Query(10, ge=1, le=50),
@@ -303,9 +304,11 @@ def peliculas_recientes(
     
     - **limit**: Número de películas a retornar
     """
-    # TODO: Consultar películas ordenadas por fecha de creación
-    # statement = select(Pelicula).order_by(Pelicula.fecha_creacion.desc()).limit(limit)
-    # peliculas = session.exec(statement).all()
-    # return peliculas
-    pass
+
+    # Consultar películas ordenadas por fecha de creación
+
+    statement = select(Pelicula).order_by(Pelicula.fecha_creacion.desc()).limit(limit)
+    peliculas = session.exec(statement).all()
+    return peliculas
+    
 
