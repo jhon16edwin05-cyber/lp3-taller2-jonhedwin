@@ -108,7 +108,7 @@ def actualizar_usuario(
 #  Si se actualiza el correo, verificar que no exista
     
 #  Actualizar solo los campos proporcionados
-    usuario_data = usuario_data.model_dump(exclude_unset=True)
+    usuario_data = usuario_update.model_dump(exclude_unset=True)
     for key, value in usuario_data.items():
         setattr(db_usuario, key, value)
         
@@ -160,10 +160,14 @@ def listar_favoritos_usuario(
     
     #  Obtener las películas favoritas del usuario
 
-    statement = select(Favorito).where(Favorito.id_usuario == usuario_id)
-    favoritos = session.exec(statement).all()
-    
-    return favoritos
+    statement = (
+        select(Pelicula)
+        .join(Favorito, Favorito.id_pelicula == Pelicula.id)
+        .where(Favorito.id_usuario == usuario_id)
+    )
+    peliculas = session.exec(statement).all()
+
+    return peliculas
 
 
 # Endpoint para marcar una película como favorita

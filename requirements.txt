@@ -11,6 +11,7 @@ sqlalchemy
 # Validación y utilidades
 python-multipart
 python-dotenv
+email-validator
 
 # Testing
 pytest
