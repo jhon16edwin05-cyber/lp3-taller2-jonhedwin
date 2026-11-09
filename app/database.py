@@ -3,36 +3,42 @@ Configuración de la base de datos y gestión de sesiones.
 Utiliza SQLModel para ORM y gestión de conexiones.
 """
 
-from sqlmodel import SQLModel, create_engine, Session
-from typing import Generator
+from collections.abc import Generator
+
+from sqlalchemy import text
+from sqlmodel import Session, SQLModel, create_engine, select
 
 from app.config import settings
 
 
-# TODO: Crear el engine de la base de datos
+# Crear el engine de la base de datos
 # El engine es la conexión principal a la base de datos
 # connect_args es específico para SQLite, remover para otras bases de datos
+connect_args = {"check_same_thread": False} if "sqlite" in settings.database_url else {}
+
 engine = create_engine(
     settings.database_url,
-    echo=settings.debug,  # Muestra las consultas SQL en consola si debug=True
-    connect_args={"check_same_thread": False}  # Necesario para SQLite
+    echo=settings.debug,
+    connect_args=connect_args,
 )
 
 
-# TODO: Función para crear todas las tablas
+# Función para crear todas las tablas
+
 def create_db_and_tables():
     """
     Crea todas las tablas en la base de datos.
     Se llama al iniciar la aplicación.
     """
-    # TODO: Importar todos los modelos antes de crear las tablas
-    # from app.models import Usuario, Pelicula, Favorito
-    
+    # Importar todos los modelos antes de crear las tablas
+    from app.models import Favorito, Pelicula, Usuario  # noqa: F401
+
     SQLModel.metadata.create_all(engine)
     print("Tablas de la base de datos creadas correctamente")
 
 
-# TODO: Función para eliminar todas las tablas (útil para testing)
+# Función para eliminar todas las tablas (útil para testing)
+
 def drop_db_and_tables():
     """
     Elimina todas las tablas de la base de datos.
@@ -43,11 +49,12 @@ def drop_db_and_tables():
 
 
 # Obtener una sesión de base de datos
+
 def get_session() -> Generator[Session, None, None]:
     """
     Generador de sesiones de base de datos.
     Se usa como dependencia en los endpoints de FastAPI.
-    
+
     Uso en endpoints:
         @app.get("/items")
         def read_items(session: Session = Depends(get_session)):
@@ -58,7 +65,8 @@ def get_session() -> Generator[Session, None, None]:
         yield session
 
 
-# TODO: Opcional - Función para verificar la conexión a la base de datos
+# Opcional - Función para verificar la conexión a la base de datos
+
 def check_database_connection() -> bool:
     """
     Verifica que la conexión a la base de datos funcione correctamente.
@@ -66,47 +74,63 @@ def check_database_connection() -> bool:
     """
     try:
         with Session(engine) as session:
-            # TODO: Ejecutar una consulta simple para verificar la conexión
-            # session.exec(text("SELECT 1"))
+            session.exec(text("SELECT 1"))
             return True
-    except Exception as e:
-        print(f"Error al conectar con la base de datos: {e}")
+    except Exception as exc:
+        print(f"Error al conectar con la base de datos: {exc}")
         return False
 
 
-# TODO: Opcional - Context manager para transacciones
+# Context manager para transacciones
 class DatabaseSession:
-    """
-    Context manager para manejar sesiones de base de datos.
-    Útil para operaciones fuera de endpoints FastAPI.
-    
-    Uso:
-        with DatabaseSession() as session:
-            user = session.get(Usuario, user_id)
-    """
     def __enter__(self) -> Session:
         self.session = Session(engine)
         return self.session
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is not None:
             self.session.rollback()
         self.session.close()
 
 
-# TODO: Opcional - Función para inicializar datos de prueba
+# Opcional - Función para inicializar datos de prueba
+
 def init_sample_data():
     """
     Inicializa la base de datos con datos de prueba.
     Útil para desarrollo y testing.
     """
-    # TODO: Crear usuarios, películas y favoritos de ejemplo
-    # with Session(engine) as session:
-    #     # Crear usuarios de ejemplo
-    #     if not session.exec(select(Usuario)).first():
-    #         usuarios = [...]
-    #         for usuario in usuarios:
-    #             session.add(usuario)
-    #         session.commit()
-    pass
+    from app.models import Pelicula, Usuario
 
+    with Session(engine) as session:
+        if not session.exec(select(Usuario)).first():
+            usuarios = [
+                Usuario(nombre="Ana López", correo="ana@correo.com"),
+                Usuario(nombre="Luis Pérez", correo="luis@correo.com"),
+            ]
+            session.add_all(usuarios)
+            session.commit()
+
+        if not session.exec(select(Pelicula)).first():
+            peliculas = [
+                Pelicula(
+                    titulo="Inception",
+                    director="Christopher Nolan",
+                    genero="Ciencia ficción",
+                    duracion=148,
+                    año=2010,
+                    clasificacion="PG-13",
+                    sinopsis="Un ladrón que roba secretos del subconsciente.",
+                ),
+                Pelicula(
+                    titulo="The Matrix",
+                    director="Lana y Lilly Wachowski",
+                    genero="Acción",
+                    duracion=136,
+                    año=1999,
+                    clasificacion="R",
+                    sinopsis="Un hacker descubre la verdad sobre la realidad.",
+                ),
+            ]
+            session.add_all(peliculas)
+            session.commit()
