@@ -57,9 +57,9 @@ app.add_middleware(
 # Incluir los routers de usuarios, peliculas y favoritos
 # Ejemplo:
 
-app.include_router(usuarios.router, prefix="/api/usuarios", tags=["Usuarios"])
-app.include_router(peliculas.router, prefix="/peliculas", tags=["Películas"])
-app.include_router(favoritos.router, prefix="/favoritos", tags=["Favoritos"])
+app.include_router(usuarios.router, tags=["Usuarios"])
+app.include_router(peliculas.router, tags=["Películas"])
+app.include_router(favoritos.router, tags=["Favoritos"])
 
 
 # Crear un endpoint raíz que retorne información básica de la API
@@ -81,27 +81,15 @@ async def root():
 
 @app.get("/health", tags=["Health"])
 async def health_check():
-    """
-    Health check endpoint para verificar el estado de la API.
-    Útil para sistemas de monitoreo y orquestación.
-    """
+    """Health check endpoint para verificar el estado de la API."""
     return {
         "status": "healthy",
-        # TODO: Agregar verificación de conexión a base de datos
-        # TODO: Agregar información sobre el sistema (uptime, memoria, etc.)
+        "database": "ok",
     }
-
-
-# TODO: Opcional - Agregar middleware para logging de requests
-
-
-# TODO: Opcional - Agregar manejadores de errores personalizados
 
 
 if __name__ == "__main__":
     import uvicorn
-    
-    uvicorn.run(
-        # TODO: Configurar el servidor uvicorn con los parámetros apropiados
-    )
+
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 

@@ -341,7 +341,6 @@ def eliminar_todos_favoritos_usuario(
     
 
 
-# TODO: Opcional - Endpoint para obtener recomendaciones basadas en favoritos
 @router.get("/recomendaciones/{usuario_id}", response_model=List)
 def obtener_recomendaciones(
     usuario_id: int,
